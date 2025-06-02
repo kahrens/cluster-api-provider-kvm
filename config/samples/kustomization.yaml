@@ -1,0 +1,6 @@
+## Append samples of your project ##
+resources:
+- kvm_v1alpha1_kvmvirtualmachine.yaml
+- kvm_v1alpha1_kvmmachine.yaml
+- kvm_v1alpha1_kvmcluster.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples

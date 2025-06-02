@@ -1,0 +1,9 @@
+apiVersion: kvm.cluster.x-k8s.io/v1alpha1
+kind: KVMCluster
+metadata:
+  labels:
+    app.kubernetes.io/name: cluster-api-provider-kvm
+    app.kubernetes.io/managed-by: kustomize
+  name: kvmcluster-sample
+spec:
+  # TODO(user): Add fields here
