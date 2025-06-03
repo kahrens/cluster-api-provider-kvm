@@ -22,7 +22,7 @@ import (
 	"time"
 
 	"github.com/libvirt/libvirt-go"
-	"github.com/libvirt/libvirt-go-xml"
+	libvirtxml "github.com/libvirt/libvirt-go-xml"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
@@ -31,7 +31,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 
-	kvmv1alpha1 "github.com/your-org/cluster-api-provider-kvm/api/v1alpha1"
+	kvmv1alpha1 "github.com/kahrens/cluster-api-provider-kvm/api/v1alpha1"
 	clusterapiv1beta1 "sigs.k8s.io/cluster-api/api/v1beta1"
 )
 
