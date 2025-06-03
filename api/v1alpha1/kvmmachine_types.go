@@ -25,17 +25,37 @@ import (
 
 // KVMMachineSpec defines the desired state of KVMMachine.
 type KVMMachineSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	// VMName is the name of the VM in libvirt
+	VMName string `json:"vmName"`
+	// Host is the blade server hostname or IP running the VM
+	Host string `json:"host"`
+	// CPUs is the number of CPU cores
+	CPUs int `json:"cpus"`
+	// Memory is the memory size (e.g., "8Gi")
+	Memory string `json:"memory"`
+	// DiskSize is the disk size (e.g., "20Gi")
+	DiskSize string `json:"diskSize"`
+	// ImagePath is the path to the base qcow2 image
+	ImagePath string `json:"imagePath"`
+	// CloudInit is the cloud-init user data
+	CloudInit string `json:"cloudInit"`
+	// NetworkInterface is the network configuration
+	NetworkInterface NetworkInterface `json:"networkInterface"`
+}
 
-	// Foo is an example field of KVMMachine. Edit kvmmachine_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+// NetworkInterface defines the network configuration
+type NetworkInterface struct {
+	Bridge string `json:"bridge"`
 }
 
 // KVMMachineStatus defines the observed state of KVMMachine.
 type KVMMachineStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	// Ready indicates if the VM is running and accessible
+	Ready bool `json:"ready"`
+	// IPAddress is the VM’s IP address
+	IPAddress string `json:"ipAddress,omitempty"`
+	// Conditions store the status conditions of the VM
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 // +kubebuilder:object:root=true

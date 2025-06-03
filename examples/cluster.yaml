@@ -1,0 +1,118 @@
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+metadata:
+  name: my-cluster
+  namespace: default
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks: ["10.244.0.0/16"]
+  controlPlaneRef:
+    kind: KubeadmControlPlane
+    apiVersion: controlplane.cluster.x-k8s.io/v1beta1
+    name: my-cluster-control-plane
+  infrastructureRef:
+    kind: KVMVirtualMachine
+    apiVersion: kvm.cluster.x-k8s.io/v1alpha1
+    name: my-cluster
+---
+apiVersion: controlplane.cluster.x-k8s.io/v1beta1
+kind: KubeadmControlPlane
+metadata:
+  name: my-cluster-control-plane
+  namespace: default
+spec:
+  kubeadmConfigSpec:
+    clusterConfiguration:
+      apiServer:
+        extraArgs:
+          cloud-provider: ""
+      controllerManager:
+        extraArgs:
+          cloud-provider: ""
+  machineTemplate:
+    infrastructureRef:
+      kind: KVMVirtualMachine
+      apiVersion: kvm.cluster.x-k8s.io/v1alpha1
+      name: my-cluster-control-plane
+  replicas: 1
+spec:
+  vmName: control-plane-1
+  host: blade1
+  cpus: 4
+  memory: "8Gi"
+  diskSize: "20Gi"
+  imagePath: "/var/kvm/images/ubuntu-24.04.qcow2"
+  cloudInit: |
+    #cloud-config
+    users:
+      - name: ubuntu
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        ssh-authorized-keys:
+          - <your-ssh-key>
+    packages:
+      - kubeadm
+      - kubelet
+      - kubectl
+    runcmd:
+      - systemctl enable kubelet
+  networkInterface:
+    bridge: "br0"
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+kind: KubeadmConfigTemplate
+metadata:
+  name: my-cluster-worker
+  namespace: default
+spec:
+  template:
+    spec:
+      joinConfiguration:
+        nodeRegistration:
+          kubeletExtraArgs:
+            cloud-provider: ""
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: MachineDeployment
+metadata:
+  name: my-cluster-worker
+  namespace: default
+spec:
+  clusterName: my-cluster
+  replicas: 2
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: my-cluster
+  template:
+    spec:
+      bootstrap:
+        configRef:
+          kind: KubeadmConfigTemplate
+          apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+          name: my-cluster-worker
+      infrastructureRef:
+        kind: KVMVirtualMachine
+        apiVersion: kvm.cluster.x-k8s.io/v1alpha1
+        name: my-cluster-worker
+        spec:
+          vmName: my-cluster-worker
+          host: blade2
+          cpus: 2
+          memory: "4Gi"
+          diskSize: "20Gi"
+          imagePath: "/var/kvm/images/ubuntu-24.04.qcow2"
+          cloudInit: |
+            #cloud-config
+            users:
+              - name: ubuntu
+                sudo: ALL=(ALL) NOPASSWD:ALL
+                ssh-authorized-keys:
+                  - <your-ssh-key>
+            packages:
+              - kubeadm
+              - kubelet
+              - kubectl
+            runcmd:
+              - systemctl enable kubelet
+          networkInterface:
+            bridge: "br0"

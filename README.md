@@ -1,8 +1,10 @@
 # cluster-api-provider-kvm
-// TODO(user): Add simple overview of use/purpose
+A Cluster API infrastructure provider to create and manage KVM VMs hosted on bare metal KVM hypervisor hosts.
 
 ## Description
-// TODO(user): An in-depth paragraph about your project and overview of use
+A Cluster API infrastructure provider to create and manage KVM VMs hosted on bare metal KVM hypervisor hosts.
+Kubevirt and Bring-your-own-host were the two projects that were closest to what was needed, i.e. a way to utilize
+blade servers with large amounts of RAM running an OS on bare metal for Kubernetes clusters.
 
 ## Getting Started
 
